@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class JDBCDemo {
     private static final String URL = "jdbc:mysql://localhost:3306/jdbc_demo";
@@ -11,7 +8,8 @@ public class JDBCDemo {
     public static void main(String[] args) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.println("Connected to the database.");
-            insertStudent(connection, "Tony", "tony@gmail.com");
+//            insertStudent(connection, "Tony", "tony@gmail.com");
+            selectStudents(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -24,6 +22,22 @@ public class JDBCDemo {
             System.out.println("INSERTED: " + rows);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void selectStudents(Connection connection) {
+        String sql = "SELECT * FROM student";
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            System.out.println("Student List : ");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                System.out.println(id + " " + name + " " + email);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
