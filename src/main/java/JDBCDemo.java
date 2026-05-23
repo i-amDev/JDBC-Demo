@@ -10,6 +10,8 @@ public class JDBCDemo {
             System.out.println("Connected to the database.");
 //            insertStudent(connection, "Tony", "tony@gmail.com");
             selectStudents(connection);
+            updateStudent(connection, 1, "Tony", "tony@gmail.com");
+            selectStudents(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,6 +40,16 @@ public class JDBCDemo {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void updateStudent(Connection connection, int id, String name, String email) {
+        String sql = "UPDATE student SET name = '" + name + "', email = '" + email + "' WHERE id=" + id;
+        try (Statement statement = connection.createStatement()){
+            int rows = statement.executeUpdate(sql);
+            System.out.println("UPDATED: " + rows);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
