@@ -10,8 +10,8 @@ public class JDBCDemo {
             System.out.println("Connected to the database.");
 //            insertStudent(connection, "Tony", "tony@gmail.com");
             selectStudents(connection);
-//            updateStudent(connection, 1, "Tony", "tony@gmail.com");
-            deleteStudent(connection, 1);
+            updateStudent(connection, 2, "Steve", "steve@gmail.com");
+//            deleteStudent(connection, 1);
             selectStudents(connection);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -45,9 +45,12 @@ public class JDBCDemo {
     }
 
     private static void updateStudent(Connection connection, int id, String name, String email) {
-        String sql = "UPDATE student SET name = '" + name + "', email = '" + email + "' WHERE id=" + id;
-        try (Statement statement = connection.createStatement()){
-            int rows = statement.executeUpdate(sql);
+        String sql = "UPDATE student SET name = ?, email = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, email);
+            preparedStatement.setInt(3, id);
+            int rows = preparedStatement.executeUpdate();
             System.out.println("UPDATED: " + rows);
         } catch (SQLException e) {
             e.printStackTrace();
